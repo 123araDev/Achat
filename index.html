@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chatbot Achat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .chat-container {
+      width: 90%;
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .chat-header {
+      background: #0078d7;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .chat-body {
+      height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+    }
+    .message {
+      margin: 10px 0;
+    }
+    .user {
+      text-align: right;
+    }
+    .bot {
+      text-align: left;
+    }
+    .chat-footer {
+      padding: 10px;
+      display: flex;
+      gap: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005bb5;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">Chatbot Achat</div>
+    <div class="chat-body" id="chat-body"></div>
+    <div class="chat-footer">
+      <input type="text" id="user-input" placeholder="Écrivez votre message..." />
+      <button id="send-btn">Envoyer</button>
+    </div>
+  </div>
+  <script>
+    const chatBody = document.getElementById('chat-body');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      appendMessage('user', message);
+      userInput.value = '';
+
+      setTimeout(() => {
+        const response = getBotResponse(message.toLowerCase());
+        appendMessage('bot', response);
+      }, 500);
+    }
+
+    function appendMessage(sender, message) {
+      const div = document.createElement('div');
+      div.className = `message ${sender}`;
+      div.innerHTML = message;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function getBotResponse(message) {
+      // Salutations
+      if (message.includes('bonjour') || message.includes('salut')) {
+        const responses = [
+          "Bonjour ! Je suis Achat, votre assistant virtuel. Comment puis-je vous aider ? 😊",
+          "Salut ! C'est Achat. Que puis-je faire pour vous aujourd'hui ?",
+        ];
+        return getRandomResponse(responses);
+      }
+
+      // Capitales avec les espaces correctement gérés
+      const capitals = {
+        "france": 'Paris',
+        "allemagne": 'Berlin',
+        "espagne": 'Madrid',
+        "italie": 'Rome',
+        "canada": 'Ottawa',
+        "japon": 'Tokyo',
+        "chine": 'Pékin',
+        "russie": 'Moscou',
+        "brésil": 'Brasilia',
+        "australie": 'Canberra',
+        "maroc": 'Rabat',
+        "egypte": 'Le Caire',
+        "mexique": 'Mexico',
+        "inde": 'New Delhi',
+        "états-unis": 'Washington D.C.',
+        "royaume-uni": 'Londres',
+        "suisse": 'Berne',
+        "suède": 'Stockholm',
+        "norvège": 'Oslo',
+        "finlande": 'Helsinki',
+        "argentine": 'Buenos Aires',
+        "afrique-du-sud": 'Pretoria',
+        "arabie-saoudite": 'Riyad',
+        "thaïlande": 'Bangkok',
+        "turquie": 'Ankara',
+        "corée-du-sud": 'Séoul',
+        "pays-bas": 'Amsterdam',
+        "belgique": 'Bruxelles',
+        "portugal": 'Lisbonne',
+        "autriche": 'Vienne',
+        "pérou": 'Lima',
+        "colombie": 'Bogotá',
+        "philippines": 'Manille',
+        "iran": 'Téhéran',
+        "irak": 'Bagdad',
+        "indonésie": 'Jakarta',
+        "vietnam": 'Hanoï',
+        "malaisie": 'Kuala Lumpur',
+        "singapour": 'Singapour',
+        "nouvelle-zélande": 'Wellington',
+        "cuba": 'La Havane',
+        "chili": 'Santiago',
+        "zambie": 'Lusaka',
+        "hongrie": 'Budapest',
+        "grèce": 'Athènes',
+        "pologne": 'Varsovie',
+        "kenya": 'Nairobi',
+        "algérie": 'Alger',
+        "sénégal": 'Dakar',
+        "nigeria": 'Abuja',
+        "soudan": 'Khartoum',
+        "qatar": 'Doha',
+        "oman": 'Mascate',
+        "paraguay": 'Asunción',
+        "uruguay": 'Montevideo',
+        "bolivie": 'Sucre',
+      };
+
+      // Remplacer les espaces dans les pays par des tirets
+      message = message.toLowerCase().replace(/ /g, '-');
+
+      for (const country in capitals) {
+        if (message.includes(country)) {
+          return `La capitale de ${country.charAt(0).toUpperCase() + country.slice(1)} est ${capitals[country]}.`;
+        }
+      }
+
+      // Exemple de calcul simple
+      if (message.match(/(\d+)(\s*[+\-x*/]\s*)(\d+)/)) {
+        try {
+          const equation = message.replace('x', '*').replace(/[^0-9+\-*/.]/g, '');
+          return `Le résultat est ${eval(equation)}`;
+        } catch {
+          return "Je n'ai pas pu résoudre cette équation.";
+        }
+      }
+
+      // Réponse générique si le message n'est pas compris
+      return "Je n'ai pas compris votre demande. Pouvez-vous reformuler ?";
+    }
+
+    // Fonction pour obtenir une réponse aléatoire parmi plusieurs réponses
+    function getRandomResponse(responses) {
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    // Liste des 31 questions fréquentes et leurs réponses
+    const frequentQuestions = {
+      "comment installer une application ?": "Rechercher et télécharger des applications ou des contenus numériques : Sur votre appareil, ouvrez le Google Play Store. ... Recherchez ou parcourez des contenus. Sélectionnez un article. Sélectionnez Installer ou le prix de l'article. Suivez les instructions à l'écran pour finaliser la transaction et télécharger le contenu.",
+      "quelle est la météo aujourd'hui ?": "Je ne peux pas vérifier la météo en ce moment.",
+      "qui est le président de la france ?": "Le président de la France est Emmanuel Macron.",
+      "combien de pays dans le monde ?": "Il y a 195 pays dans le monde.",
+      "quel est le plus grand océan ?": "Le plus grand océan est l'océan Pacifique.",
+      "quel est le plus grand pays du monde ?": "Le plus grand pays du monde est la Russie.",
+      "quel est le plus haut sommet du monde ?": "Le plus haut sommet du monde est l'Everest, à 8 848 mètres.",
+      "quel est le pays le plus peuplé ?": "Le pays le plus peuplé est la Chine.",
+      "quelles sont les couleurs du drapeau de la france ?": "Le drapeau de la France est bleu, blanc et rouge.",
+      "qu'est-ce que l'union européenne ?": "L'Union européenne est une organisation politique et économique de 27 pays européens.",
+      "qu'est-ce que la biodiversité ?": "La biodiversité désigne la variété des formes de vie sur Terre.",
+      "quel est l'inventeur du téléphone ?": "L'inventeur du téléphone est Alexander Graham Bell.",
+      "quelle est la durée d'une journée sur Mars ?": "Une journée sur Mars dure environ 24 heures et 39 minutes.",
+      "qui a peint la Mona Lisa ?": "La Mona Lisa a été peinte par Léonard de Vinci.",
+      "quel est l'animal le plus grand ?": "L'animal le plus grand est la baleine bleue.",
+      "quel est le premier homme sur la Lune ?": "Neil Armstrong a été le premier homme sur la Lune en 1969.",
+      "qu'est-ce que la photosynthèse ?": "La photosynthèse est le processus par lequel les plantes fabriquent leur nourriture à partir de la lumière.",
+      "quelle est la capitale de l'italie ?": "La capitale de l'Italie est Rome.",
+      "combien de continents existe-t-il ?": "Il y a 7 continents : Afrique, Amérique, Antarctique, Asie, Europe, Océanie et Antarctique.",
+      "quelles sont les grandes pyramides d'Égypte ?": "Les grandes pyramides d'Égypte sont à Gizeh, incluant la pyramide de Khéops.",
+      "qu'est-ce que l'effet de serre ?": "L'effet de serre est un phénomène où les gaz dans l'atmosphère retiennent la chaleur.",
+      "qui a écrit 'Les Misérables' ?": "L'auteur de 'Les Misérables' est Victor Hugo.",
+      "comment fonctionne une voiture ?": "Une voiture fonctionne en brûlant du carburant pour faire tourner un moteur qui propulse les roues.",
+      "comment se forme une éclipse ?": "Une éclipse se forme lorsqu'un objet céleste, comme la Lune, bloque la lumière du Soleil.",
+      "quelle est la capitale du japon ?": "La capitale du Japon est Tokyo.",
+      "qui est Isaac Newton ?": "Isaac Newton était un scientifique célèbre pour ses lois de la gravitation.",
+      "quel est le plus long fleuve du monde ?": "Le plus long fleuve du monde est le Nil, suivi par l'Amazone.",
+      "combien de langues sont parlées dans le monde ?": "Il y a environ 7 000 langues parlées dans le monde.",
+      "comment naissent les étoiles ?": "Les étoiles naissent dans des nuages de gaz et de poussière qui se contractent sous l'effet de la gravité.",
+      "quel est l'animal le plus rapide ?": "L'animal le plus rapide est le faucon pèlerin.",
+      "quel est le plus petit pays du monde ?": "Le plus petit pays du monde est le Vatican.",
+      "combien de saisons y a-t-il dans une année ?": "Il y a 4 saisons : printemps, été, automne et hiver.",
+      "qu'est-ce que la gravité ?": "La gravité est la force d'attraction qui fait que les objets tombent vers la Terre.",
+      "qu'est-ce qu'un atome ?": "Un atome est la plus petite unité de matière qui compose tous les éléments.",
+      "qui a inventé le vaccin contre la variole ?": "Le vaccin contre la variole a été inventé par Edward Jenner.",
+      "comment les oiseaux volent ?": "Les oiseaux volent grâce à la poussée des ailes et à leur forme aérodynamique.",
+      "qu'est-ce que la Révolution française ?": "La Révolution française est une période où le peuple a renversé la monarchie et établi la République.",
+      "quel est le plus grand désert du monde ?": "Le plus grand désert du monde est le désert de l'Antarctique.",
+      "qu'est-ce que la tectonique des plaques ?": "La tectonique des plaques est la théorie qui explique le mouvement des grandes plaques terrestres.",
+      "qu'est-ce qu'une éclipse solaire ?": "Une éclipse solaire se produit lorsque la Lune passe entre la Terre et le Soleil.",
+      "comment se forme un arc-en-ciel ?": "Un arc-en-ciel se forme lorsque la lumière se décompose à travers des gouttes d'eau dans l'air.",
+    };
+  </script>
+</body>
+</html>
